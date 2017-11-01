@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<meta charset='utf-8'>
+<html>
+  <head>
+    <title>Alarm</title>
+  </head>
+  <body>
+<canvas id="maincanvas" style="border: none;" width="1" height="1">
+  Canvas 를 지원하지 않는 브라우저인 것 같습니다. 더 높은 버전의 브라우저를 이용해주세요.
+</canvas>
+<div id='DIValarmtable'></div>
+<div id='jQueryDebugDiv'></div>
+<div id='DebugDIV'></div>
+  </body>
+</html>
+
+<script type="text/javascript" src="jquery.js" charset="utf-8"></script>
+
+<script type='text/javascript'>
+var debug=jQuery('#DebugDIV')[0];
+var ALARM_NUMBER=5;
+var ALARM_SOUND_PATH="justice.mp3";
+
+function MakeTable(){
+  var divspace=jQuery('#DIValarmtable')[0];
+  var tcs="<table border=1>\
+  <tr>";
+
+  var tcs=tcs+"<td colspan=2><div id='DIVclock'></div></td>\
+  </tr>";
+
+  for(var i=0;i<ALARM_NUMBER;i++){
+    var tcs=tcs+"<tr>\
+    <td><audio id='alarmsound"+i+"' src='"+ALARM_SOUND_PATH+"'></audio>\
+    <div id='DIValarm"+i+"'></div></td>\
+    <td><div id='DIVremain"+i+"'></div></td>\
+    </tr>";
+  }
+  var tcs=tcs+"</table>";
+
+  divspace.innerHTML=tcs;
+}
+
+MakeTable();
+
+function Clock(){
+  this.time=new Date();
+  this.interface_div;
+  this.runf=function(){
+
+    this.time=new Date();
+    jQuery('#DIVclock')[0].innerHTML=this.time;
+  }//endof runf
+} //endof function Clock
+
+function Alarm(){
+  this.time=new Date(0);
+  this.number;
+  this.alarmsound;
+  this.interface_divalarm;
+  this.interface_divremain;
+
+  //알람 울리기.
+  this.ringalarm=function(){
+      this.alarmsound.play();
+    alert(this.number +"번 알람입니다.");
+
+  }
+  //프레임마다 알람시계에서 작동되는 함수 runf
+  this.runf= function(){
+    //현재시간을 비교해서 알람을 울리도록 한다.
+    var nowtime=new Date()
+    if(this.time.getHours()==nowtime.getHours() &&
+        this.time.getMinutes()==nowtime.getMinutes() &&
+        this.time.getSeconds()==nowtime.getSeconds()){
+      this.ringalarm();
+    }
+    var atime=this.time.getHours()*3600 + this.time.getMinutes()*60 + this.time.getSeconds();
+    var ctime=nowtime.getHours()*3600 + nowtime.getMinutes()*60 + nowtime.getSeconds();
+    if(atime<ctime)atime+=24*60*60;
+
+    //유효성 검사.
+    if(typeof($('#remaintime'+this.number)[0])=='object'){
+     $('#remaintime'+this.number)[0].innerHTML=parseInt((atime-ctime)/3600) + " : " + parseInt(((atime-ctime)%3600)/60) + " : " + (atime-ctime)%60 ;
+    }
+  }//endof runf
+  //알람 설정
+  this.submitalarm=function(){
+      var hhh=$("#hhh"+this.number)[0].value;
+      var mmm=$("#mmm"+this.number)[0].value;
+      var sss=$("#sss"+this.number)[0].value;
+
+      if(hhh<=0 || hhh>23 || isNaN(hhh)){hhh='00';}
+      if(mmm<=0 || mmm>59 || isNaN(mmm)){mmm='00';}
+      if(sss<=0 || sss>59 || isNaN(sss)){sss='00';}
+
+      this.time.setHours(hhh);
+      this.time.setMinutes(mmm);
+      this.time.setSeconds(sss);
+
+      this.interface_divalarm.innerHTML=hhh + " : " + mmm + " : " + sss;
+      this.remaintimeform();
+  }//endof submitalarm
+  this.inputform= function(){
+    var inputformstring="<form onsubmit='alarmclock["+this.number+"].submitalarm()'>\
+    <input id='hhh"+this.number+"' type='text' size='2' maxlength='2' value="+this.time.getHours()+"> : \
+    <input id='mmm"+this.number+"' type='text' size='2' maxlength='2' value="+this.time.getMinutes()+"> : \
+    <input id='sss"+this.number+"' type='text' size='2' maxlength='2' value="+this.time.getSeconds()+">\
+    <input id='setalarm' type='submit' value='OK' ></form>";
+    this.interface_divremain.innerHTML=inputformstring;
+  }//endof inputform
+  this.remaintimeform= function(){
+    var remainformstring="<div id=remaintime"+this.number+"></div>\
+    <input type='button' value='알람설정' onclick='alarmclock["+this.number+"].inputform()'>";
+    this.interface_divremain.innerHTML=remainformstring;
+
+  }//endof remaintimeform
+
+}//endof Alarm
+
+//초기화 함수
+var nowclock=new Clock();
+var alarmclock=new Array(ALARM_NUMBER);
+function Initialize(){
+  nowclock=new Clock();
+  nowclock.interface_div=jQuery('#DIVclock')[0];
+
+  for(var i=0;i<ALARM_NUMBER;i++){
+    alarmclock[i]=new Alarm();
+    alarmclock[i].number=i;
+    alarmclock[i].interface_divalarm=jQuery('#DIValarm'+i)[0];
+    alarmclock[i].interface_divremain=jQuery('#DIVremain'+i)[0];
+    alarmclock[i].alarmsound=jQuery('#alarmsound'+i)[0];
+    alarmclock[i].inputform();
+   alarmclock[i].submitalarm();
+  }
+}
+Initialize();
+
+//Run Interval
+function RunInterval(){
+
+  nowclock.runf();
+  for(var i=0;i<ALARM_NUMBER;i++){
+    alarmclock[i].runf();
+  }
+  setTimeout(RunInterval,50);
+}
+RunInterval();
+</script>
