@@ -26,11 +26,12 @@ function MakeTable(){
   var tcs="<table border=1>\
   <tr>";
 
-  var tcs=tcs+"<td colspan=2><div id='DIVclock'></div></td>\
+  var tcs=tcs+"<td colspan=3><div id='DIVclock'></div></td>\
   </tr>";
 
   for(var i=0;i<ALARM_NUMBER;i++){
     var tcs=tcs+"<tr>\
+    <td><div id='alarmlight"+i+"' align=center onClick='javascript:alarmclock["+i+"].toggle_enable()' style='color:#40FF40;'>●</div></td>\
     <td><audio id='alarmsound"+i+"' src='"+ALARM_SOUND_PATH+"'></audio>\
     <div id='DIValarm"+i+"'></div></td>\
     <td><div id='DIVremain"+i+"'></div></td>\
@@ -59,6 +60,7 @@ function Alarm(){
   this.alarmsound;
   this.interface_divalarm;
   this.interface_divremain;
+  this.alarm_enabled=true;
 
   //알람 울리기.
   this.ringalarm=function(){
@@ -72,7 +74,8 @@ function Alarm(){
     var nowtime=new Date()
     if(this.time.getHours()==nowtime.getHours() &&
         this.time.getMinutes()==nowtime.getMinutes() &&
-        this.time.getSeconds()==nowtime.getSeconds()){
+        this.time.getSeconds()==nowtime.getSeconds() &&
+        this.alarm_enabled){
       this.ringalarm();
     }
     var atime=this.time.getHours()*3600 + this.time.getMinutes()*60 + this.time.getSeconds();
@@ -115,6 +118,17 @@ function Alarm(){
     this.interface_divremain.innerHTML=remainformstring;
 
   }//endof remaintimeform
+
+  this.toggle_enable=function(){
+    if(this.alarm_enabled){
+      this.alarm_enabled=false;
+      $("#alarmlight"+this.number)[0].style.color="#FF0000";
+    }//endof if this.alarm_enabled is true
+    else{
+      this.alarm_enabled=true;
+      $("#alarmlight"+this.number)[0].style.color="#40FF40";
+    }//endof else
+  }//endof toggle_enable
 
 }//endof Alarm
 
