@@ -20,6 +20,7 @@
 var debug=jQuery('#DebugDIV')[0];
 var ALARM_NUMBER=5;
 var ALARM_SOUND_PATH="justice.mp3";
+var ALARM_MESSAGE="알람 시각입니다.";
 
 function MakeTable(){
   var divspace=jQuery('#DIValarmtable')[0];
@@ -64,8 +65,10 @@ function Alarm(){
 
   //알람 울리기.
   this.ringalarm=function(){
+      this.toggle_enable();
       this.alarmsound.play();
-    alert(this.number +"번 알람입니다.");
+      ALARM_MESSAGE=(this.number+1)+"번 알람입니다.";
+      setTimeout(function(){alert(ALARM_MESSAGE);},1000);
 
   }
   //프레임마다 알람시계에서 작동되는 함수 runf
