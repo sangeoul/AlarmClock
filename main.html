@@ -107,12 +107,34 @@ function Alarm(){
       this.alarm_enabled=true;
       this.remaintimeform();
   }//endof submitalarm
+  this.submittimer=function(){
+      var hhh=$("#hhh"+this.number)[0].value;
+      var mmm=$("#mmm"+this.number)[0].value;
+      var sss=$("#sss"+this.number)[0].value;
+
+      if(hhh<=0 || hhh>23 || isNaN(hhh)){hhh='00';}
+      if(mmm<=0 || mmm>59 || isNaN(mmm)){mmm='00';}
+      if(sss<=0 || sss>59 || isNaN(sss)){sss='00';}
+
+      var thhh=(new Date().getHours()+(hhh/1))%24;
+      var tmmm=(new Date().getMinutes()+(mmm/1))%60;
+      var tsss=(new Date().getSeconds()+(sss/1))%60;
+
+      this.time.setHours(thhh);
+      this.time.setMinutes(tmmm);
+      this.time.setSeconds(tsss);
+
+      this.interface_divalarm.innerHTML=thhh + " : " + tmmm + " : " + tsss;
+      this.alarm_enabled=true;
+      this.remaintimeform();
+  }//endof submittimer
   this.inputform= function(){
-    var inputformstring="<form onsubmit='alarmclock["+this.number+"].submitalarm()'>\
+    var inputformstring="<form>\
     <input id='hhh"+this.number+"' type='text' size='2' maxlength='2' value="+this.time.getHours()+"> : \
     <input id='mmm"+this.number+"' type='text' size='2' maxlength='2' value="+this.time.getMinutes()+"> : \
     <input id='sss"+this.number+"' type='text' size='2' maxlength='2' value="+this.time.getSeconds()+">\
-    <input id='setalarm' type='submit' value='OK' ></form>";
+    <input id='setalarm' type='button' value='에 알람' onclick='alarmclock["+this.number+"].submitalarm()' >\
+    <input id='settimer' type='button' value='후에 알람' onclick='alarmclock["+this.number+"].submittimer()'>";
     this.interface_divremain.innerHTML=inputformstring;
   }//endof inputform
   this.remaintimeform= function(){
