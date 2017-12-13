@@ -119,6 +119,17 @@ function Alarm(){
       var thhh=(new Date().getHours()+(hhh/1))%24;
       var tmmm=(new Date().getMinutes()+(mmm/1))%60;
       var tsss=(new Date().getSeconds()+(sss/1))%60;
+      if(tsss>=60){
+        tsss=tsss%60;
+        tmmm++;
+      }
+      if(tmmm>=60){
+        tmmm=tmmm%60;
+        thhh++;
+      }
+      if(thhh>=24){
+        thhh=thhh%24;
+      }
 
       this.time.setHours(thhh);
       this.time.setMinutes(tmmm);
