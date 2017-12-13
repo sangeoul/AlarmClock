@@ -116,18 +116,18 @@ function Alarm(){
       if(mmm<=0 || mmm>59 || isNaN(mmm)){mmm='00';}
       if(sss<=0 || sss>59 || isNaN(sss)){sss='00';}
 
-      var thhh=(new Date().getHours()+(hhh/1))%24;
-      var tmmm=(new Date().getMinutes()+(mmm/1))%60;
-      var tsss=(new Date().getSeconds()+(sss/1))%60;
-      if(tsss>=60){
+      var thhh=(new Date().getHours()+(hhh/1));
+      var tmmm=(new Date().getMinutes()+(mmm/1));
+      var tsss=(new Date().getSeconds()+(sss/1));
+      if((tsss/1)>=60){
         tsss=tsss%60;
         tmmm++;
       }
-      if(tmmm>=60){
+      if((tmmm/1)>=60){
         tmmm=tmmm%60;
         thhh++;
       }
-      if(thhh>=24){
+      if((thhh/1)>=24){
         thhh=thhh%24;
       }
 
