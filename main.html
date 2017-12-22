@@ -65,7 +65,7 @@ function Alarm(){
 
   //알람 울리기.
   this.ringalarm=function(){
-      this.alarm_enabled=false;
+      this.toggle_enable(false);
       this.alarmsound.play();
       ALARM_MESSAGE=(this.number+1)+"번 알람입니다.";
       setTimeout(function(){alert(ALARM_MESSAGE);},1000);
@@ -155,11 +155,19 @@ function Alarm(){
 
   }//endof remaintimeform
 
-  this.toggle_enable=function(){
-    if(this.alarm_enabled){
+  this.toggle_enable=function(ss){
+    if(ss==true){
+      this.alarm_enabled=true;
+      $("#alarmlight"+this.number)[0].style.color="#40FF40";
+    } //endof if
+    else if(ss==false){
       this.alarm_enabled=false;
       $("#alarmlight"+this.number)[0].style.color="#FF0000";
-    }//endof if this.alarm_enabled is true
+    }//end of elseif
+    else if(this.alarm_enabled){
+      this.alarm_enabled=false;
+      $("#alarmlight"+this.number)[0].style.color="#FF0000";
+    }//endof elseif this.alarm_enabled is true
     else{
       this.alarm_enabled=true;
       $("#alarmlight"+this.number)[0].style.color="#40FF40";
